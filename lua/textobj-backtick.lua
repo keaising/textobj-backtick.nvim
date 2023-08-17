@@ -57,9 +57,9 @@ vim.keymap.set("v", "i`", inner_trim(), opt)
 vim.keymap.set("x", "i`", inner_trim(), opt)
 vim.keymap.set("o", "i`", inner_trim(), opt)
 
-vim.keymap.set("v", "ia`", inner_all(), opt)
-vim.keymap.set("x", "ia`", inner_all(), opt)
-vim.keymap.set("o", "ia`", inner_all(), opt)
+-- vim.keymap.set("v", "ia`", inner_all(), opt)
+-- vim.keymap.set("x", "ia`", inner_all(), opt)
+-- vim.keymap.set("o", "ia`", inner_all(), opt)
 
 vim.keymap.set("v", "a`", arround(), opt)
 vim.keymap.set("x", "a`", arround(), opt)
