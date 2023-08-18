@@ -1,54 +1,80 @@
 # textobj-backtick.nvim
 
-Textobj for backtick, it is better than default behavior in Neovim that it can choose content in multilines.
+Textobj for backtick, this plugin is better than default behavior in Neovim that it allows user to choose content in multilines.
+
+## 1. Example
 
 For the following sample text, users can use textobj motions to choose/yank/delete/cut content between two backticks.
 
 ```go
-const SampleString = `  Before this sentence, there
-
-are two white spaces.
-
-And after this sentence, there are three white spaces    `
+const SampleString = `  SELECT
+  id,
+  first_name,
+  last_name,
+  gender,
+  age
+from
+  user
+where id = $1;  `
 ```
 
-### i` / \<Plug\>(textobj-backtick-i)
+### 1.1 Trim backticks and white spaces around
+
+Keymap: `` i` ``
+
+Complex keymap: `<Plug>(textobj-backtick-i)`
 
 No backticks in the beginning and ending, no white spaces in the beginning and ending.
 
-```
-Before this sentence, there
-
-are two white spaces.
-
-And after this sentence, there are three white spaces
-```
-
-### a` / \<Plug\>(textobj-backtick-a)
-
-All content, include backticks in the beginning and ending.
-
-```
-`  Before this sentence, there
-
-are two white spaces.
-
-And after this sentence, there are three white spaces    `
+```sql
+SELECT
+  id,
+  first_name,
+  last_name,
+  gender,
+  age
+from
+  user
+where id = $1;
 ```
 
-### \<Plug\>(textobj-backtick-ia)
+### 1.2 Keep all backticks and white spaces around
 
-No backticks in the beginning and ending, keep white spaces in the beginning and ending.
+Keymap: `` a` ``
 
+Complex keymap: `<Plug>(textobj-backtick-a)`
+
+```sql
+`  SELECT
+  id,
+  first_name,
+  last_name,
+  gender,
+  age
+from
+  user
+where id = $1;  `
 ```
-  Before this sentence, there
 
-are two white spaces.
+### 1.3 Trim backticks only, keep all white spaces around
 
-And after this sentence, there are three white spaces  (there are two spaces here, but markdown formatter will trim them automatically)
+This case doesn't have keymap in default, you can add keymap by yourself in config.
+
+Complex keymap: `<Plug>(textobj-backtick-ia)`
+
+```sql
+  SELECT
+  id,
+  first_name,
+  last_name,
+  gender,
+  age
+from
+  user
+where id = $1;  (there are two tailing spaces here)
 ```
 
-## Install
+## 2. Install
 
 Lazy
 
@@ -75,4 +101,29 @@ require("textobj-backtick").setup({
     -- all content, include backticks
     around_key = "a`"
 })
+```
+
+## 3. Use case
+
+Set following keymap in Neovim.
+
+```
+nnoremap <leader>vv v<Plug>(textobj-backtick-i) :!pg_format<CR>
+```
+
+By `<leader>vv`, users can visual select content in backticks and format it with `pg_format`
+
+```go
+const SampleString = `
+SELECT
+  id,
+  first_name,
+  last_name,
+  gender,
+  age
+FROM
+  user
+WHERE
+  id = $1;
+`
 ```
