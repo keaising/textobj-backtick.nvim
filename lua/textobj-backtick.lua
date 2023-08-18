@@ -45,43 +45,69 @@ local function inner_all()
     end
 end
 
-local function arround()
+local function around()
     return function()
         search_backticks_inside(true, true)
     end
 end
 
-local opt = { silent = true, noremap = true }
+local function set_key(key, func)
+    if key == "" then
+        return
+    end
 
-vim.keymap.set("v", "i`", inner_trim(), opt)
-vim.keymap.set("x", "i`", inner_trim(), opt)
-vim.keymap.set("o", "i`", inner_trim(), opt)
+    local opt = { silent = true, noremap = true }
+    vim.keymap.set("v", key, func, opt)
+    vim.keymap.set("x", key, func, opt)
+    vim.keymap.set("o", key, func, opt)
+end
 
--- vim.keymap.set("v", "ia`", inner_all(), opt)
--- vim.keymap.set("x", "ia`", inner_all(), opt)
--- vim.keymap.set("o", "ia`", inner_all(), opt)
+local function set_complex_key(key, func)
+    local opt = { silent = true, noremap = true }
+    vim.keymap.set("v", key, func, opt)
+    vim.keymap.set("x", key, func, opt)
+    vim.keymap.set("o", key, func, opt)
+    vim.keymap.set("n", key, func, opt)
+end
 
-vim.keymap.set("v", "a`", arround(), opt)
-vim.keymap.set("x", "a`", arround(), opt)
-vim.keymap.set("o", "a`", arround(), opt)
+-- default value
+local C = {
+    inner_trim_key = "i`",
+    inner_all_key = "",
+    around_key = "a`",
+}
 
-vim.keymap.set("v", "<Plug>(textobj-backtick-i)", inner_trim(), opt)
-vim.keymap.set("x", "<Plug>(textobj-backtick-i)", inner_trim(), opt)
-vim.keymap.set("o", "<Plug>(textobj-backtick-i)", inner_trim(), opt)
-vim.keymap.set("n", "<Plug>(textobj-backtick-i)", inner_trim(), opt)
+local function set_opts(opts)
+    if opts == nil or type(opts) ~= "table" then
+        return
+    end
 
-vim.keymap.set("v", "<Plug>(textobj-backtick-ia)", inner_all(), opt)
-vim.keymap.set("x", "<Plug>(textobj-backtick-ia)", inner_all(), opt)
-vim.keymap.set("o", "<Plug>(textobj-backtick-ia)", inner_all(), opt)
-vim.keymap.set("n", "<Plug>(textobj-backtick-ia)", inner_all(), opt)
+    if opts.inner_trim_key ~= nil and opts.inner_trim_key ~= "" then
+        C.inner_trim_key = opts.inner_trim_key
+    end
 
-vim.keymap.set("v", "<Plug>(textobj-backtick-a)", arround(), opt)
-vim.keymap.set("x", "<Plug>(textobj-backtick-a)", arround(), opt)
-vim.keymap.set("o", "<Plug>(textobj-backtick-a)", arround(), opt)
-vim.keymap.set("n", "<Plug>(textobj-backtick-a)", arround(), opt)
+    if opts.inner_all_key ~= nil and opts.inner_all_key ~= "" then
+        C.inner_all_key = opts.inner_all_key
+    end
+
+    if opts.around_key ~= nil and opts.around_key ~= "" then
+        C.around_key = opts.around_key
+    end
+end
 
 local M = {}
-M.setup = function() end
+
+M.setup = function(opts)
+    set_opts(opts)
+
+    set_key(C.inner_trim_key, inner_trim())
+    set_key(C.inner_all_key, inner_all())
+    set_key(C.around_key, around())
+
+    set_complex_key("<Plug>(textobj-backtick-i)", inner_trim())
+    set_complex_key("<Plug>(textobj-backtick-ia)", inner_all())
+    set_complex_key("<Plug>(textobj-backtick-a)", around())
+end
 
 return M
 
