@@ -41,7 +41,7 @@ end
 
 local function inner_all()
     return function()
-        search_backticks_inside(false, true)
+        search_backticks_inside(false, false)
     end
 end
 
